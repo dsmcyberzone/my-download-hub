@@ -55,7 +55,7 @@ export const downloadsData = [
     "date": "2026-07-17",
     "downloads": 150,
     "image": "tiktok-prompt-thumb.jpg", // වෙබ්සයිට් එකේ පේන Before/After image එක
-    "file": "assets/images/tiktok-download.jpg", // Get File එබුවම download වෙන image එක
+    "file": "tiktok-torn-paper.jpg", // Get File එබුවම download වෙන image එක
     "isExternal": false,
     "version": "1.0",
     "tags": ["Photoshop", "TikTok", "AI Prompt", "Overlay"]
