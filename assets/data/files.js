@@ -44,5 +44,20 @@ export const downloadsData = [
     "isExternal": false,
     "version": "1.0",
     "tags": ["WAV", "Audio", "Transitions", "Foley"]
+  },
+  {
+    "id": "tiktok-ai-prompt-01",
+    "title": "Realistic Torn Paper AI Prompt Overlay",
+    "description": "Replace the existing Instagram profile displayed on the torn paper with the provided TikTok profile screenshot while keeping everything else exactly the same. Preserve the torn paper shape, hand position, camera angle, perspective, lighting, shadows, wrinkles, paper texture, and blurred green foliage background. Seamlessly fit the TikTok profile onto the paper with realistic perspective correction and natural paper texture blending, making it appear as if it was originally printed on the torn paper. Keep all profile details, icons, text, and profile picture sharp, clear, and readable without distortion. Do not change the hand, fingers, paper edges, background, or composition. The final image must be ultra-realistic, photorealistic, DSLR-quality, with shallow depth of field, cinematic color grading, natural lighting, highly detailed textures, and crisp 8K resolution, making it completely indistinguishable from a real photograph.",
+    "category": "RAW Videos", // ඔයාගේ Category එකට අනුව
+    "size": "2.4 MB",
+    "bytes": 2516582,
+    "date": "2026-07-17",
+    "downloads": 150,
+    "image": "assets/images/tiktok-thumb.jpg", // වෙබ්සයිට් එකේ පේන Before/After image එක
+    "file": "assets/images/tiktok-download.jpg", // Get File එබුවම download වෙන image එක
+    "isExternal": false,
+    "version": "1.0",
+    "tags": ["Photoshop", "TikTok", "AI Prompt", "Overlay"]
   }
 ];
