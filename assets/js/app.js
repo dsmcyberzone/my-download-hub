@@ -10,6 +10,7 @@ class DownloadHubApp {
     this.initDOM();
     this.initEventListeners();
     this.render();
+    this.initModalHTML(); // Popup එකට අවශ්‍ය HTML එක හදනවා
   }
 
   initDOM() {
@@ -65,6 +66,7 @@ class DownloadHubApp {
       this.cardsContainer.addEventListener('click', (e) => {
         const favoriteBtn = e.target.closest('.fav-toggle-btn');
         const downloadBtn = e.target.closest('.download-action-btn');
+        const viewPromptBtn = e.target.closest('.view-prompt-btn'); // Prompt එක බලන බටන් එක
 
         if (favoriteBtn) {
           const id = favoriteBtn.getAttribute('data-id');
@@ -74,8 +76,81 @@ class DownloadHubApp {
           const id = downloadBtn.getAttribute('data-id');
           this.trackDownloadCount(id);
         }
+        if (viewPromptBtn) {
+          const id = viewPromptBtn.getAttribute('data-id');
+          this.openPromptModal(id);
+        }
       });
     }
+  }
+
+  // Popup Modal එක සයිට් එකට dynamic විදිහට ඇතුළත් කරන එක
+  initModalHTML() {
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'prompt-modal';
+    modalDiv.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300';
+    modalDiv.innerHTML = `
+      <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden mx-4 transform scale-95 transition-transform duration-300">
+        <div class="flex items-center justify-between p-5 border-b border-[var(--border-color)]">
+          <h3 class="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <i class="fas fa-terminal text-[var(--accent-color)]"></i> AI Generation Prompt
+          </h3>
+          <button id="close-modal-btn" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xl p-1">&times;</button>
+        </div>
+        <div class="p-6">
+          <div class="relative bg-gray-50 dark:bg-gray-900/50 border border-[var(--border-color)] rounded-xl p-4 mb-4">
+            <p id="modal-prompt-text" class="text-sm text-[var(--text-primary)] leading-relaxed select-all max-h-60 overflow-y-auto font-mono whitespace-pre-wrap"></p>
+            <button id="copy-prompt-btn" class="absolute top-3 right-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] hover:bg-[var(--accent-color)] hover:text-white text-[var(--text-primary)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shadow-sm">
+              <i class="far fa-copy"></i> <span>Copy</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalDiv);
+
+    // Modal එක වහන Event Listeners
+    modalDiv.addEventListener('click', (e) => {
+      if (e.target === modalDiv || e.target.id === 'close-modal-btn') this.closePromptModal();
+    });
+
+    // Prompt එක Copy කරන Event Listener
+    document.getElementById('copy-prompt-btn').addEventListener('click', () => {
+      const text = document.getElementById('modal-prompt-text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const copyBtn = document.getElementById('copy-prompt-btn');
+        copyBtn.innerHTML = '<i class="fas fa-check text-green-500"></i> <span>Copied!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copy</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  openPromptModal(id) {
+    const item = this.items.find(i => i.id === id);
+    if (!item) return;
+
+    const modal = document.getElementById('prompt-modal');
+    const textContainer = document.getElementById('modal-prompt-text');
+    
+    textContainer.innerText = item.description;
+    
+    // Smooth Animation එකකින් පෙන්වීම
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modal.classList.remove('opacity-0');
+      modal.querySelector('div').classList.remove('scale-95');
+    }, 10);
+  }
+
+  closePromptModal() {
+    const modal = document.getElementById('prompt-modal');
+    modal.classList.add('opacity-0');
+    modal.querySelector('div').classList.add('scale-95');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 3000); // Animation එක ඉවර වුණාම hide කරයි
   }
 
   toggleFavorite(id, element) {
@@ -173,7 +248,12 @@ class DownloadHubApp {
             <span><i class="far fa-calendar-alt mr-1"></i>${item.date}</span>
           </div>
           <h3 class="text-lg font-bold text-[var(--text-primary)] mb-2 line-clamp-1">${item.title}</h3>
-          <p class="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">${item.description}</p>
+          
+          <!-- මෙතන Description එක උඩ ක්ලික් කරලා මුළු prompt එකම බලන්න පුළුවන් -->
+          <p class="view-prompt-btn text-sm text-[var(--text-secondary)] mb-4 line-clamp-2 cursor-pointer hover:text-[var(--accent-color)] transition-colors" data-id="${item.id}" title="Click to view full prompt">
+            ${item.description} <span class="text-xs text-[var(--accent-color)] font-medium block mt-1">Read Full Prompt...</span>
+          </p>
+
           <div class="flex flex-wrap gap-1 mb-4">
             ${item.tags.map(tag => `<span class="text-xs bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] px-2 py-0.5 rounded-md">#${tag}</span>`).join('')}
           </div>
@@ -196,7 +276,12 @@ class DownloadHubApp {
             <span class="text-xs font-semibold px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] rounded">${item.category}</span>
             <h3 class="text-base font-bold text-[var(--text-primary)] truncate">${item.title}</h3>
           </div>
-          <p class="text-xs text-[var(--text-secondary)] line-clamp-1 mb-2">${item.description}</p>
+          
+          <!-- List view එකටත් prompt බටන් එක එකතු කළා -->
+          <p class="view-prompt-btn text-xs text-[var(--text-secondary)] line-clamp-1 mb-2 cursor-pointer hover:text-[var(--accent-color)] transition-colors" data-id="${item.id}" title="Click to view full prompt">
+            ${item.description}
+          </p>
+
           <div class="flex gap-4 text-xs text-[var(--text-secondary)]">
             <span>Size: <b>${item.size}</b></span>
             <span>Downloads: <b>${item.downloads.toLocaleString()}</b></span>
