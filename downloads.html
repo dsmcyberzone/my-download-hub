@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asset Hub — Premium Downloads</title>
+  <meta name="description" content="Access masterclass-tier visual resources, RAW video components, ZIP libraries, LUT setups, and sound fx files.">
+  
+  <!-- Base Core Styling & Font Architectures -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  
+  <style>
+    :root {
+      --bg-primary: #f9fafb;
+      --bg-secondary: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border-color: #e5e7eb;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+    }
+    
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+    }
+
+    .active-accent {
+      background-color: var(--accent-color) !important;
+      color: #ffffff !important;
+      border-color: var(--accent-color) !important;
+    }
+
+    html[data-animations="disabled"] * {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    
+    /* Blurred Glass Navbar Construction */
+    .glass-nav {
+      background-color: rgba(var(--bg-secondary), 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+    }
+  </style>
+
+  <!-- Anti-FOUC Context Setup Module Initialization -->
+  <script src="assets/js/theme.js"></script>
+</head>
+<body class="antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Sticky Top Navigation Header -->
+  <header class="sticky top-0 z-50 w-full transition-colors duration-300 bg-[var(--bg-secondary)]/80 backdrop-blur-md border-b border-[var(--border-color)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2.5 font-bold text-xl tracking-tight text-[var(--text-primary)]">
+          <div class="w-8 h-8 rounded-lg bg-[var(--accent-color)] flex items-center justify-center text-white shadow-sm shadow-blue-500/20">
+            <i class="fas fa-layer-group text-sm"></i>
+          </div>
+          <span>CREATOR<span class="font-light opacity-80">HUB</span></span>
+        </a>
+        <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <a href="index.html" class="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Home</a>
+          <a href="downloads.html" class="px-3 py-2 text-[var(--text-primary)] font-semibold border-b-2 border-[var(--accent-color)]">Downloads</a>
+          <a href="categories.html" class="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Categories</a>
+          <a href="favorites.html" class="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Favorites</a>
+          <a href="about.html" class="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">About</a>
+        </nav>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <a href="settings.html" class="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-gray-100 dark:hover:bg-gray-800 transition-all" title="System Customization">
+          <i class="fas fa-sliders-h"></i>
+        </a>
+        <button class="md:hidden text-xl text-[var(--text-primary)] focus:outline-none p-2" aria-label="Toggle Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Control Deck Section Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8" data-aos="fade-down">
+      <h1 class="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl mb-2">Resource Library</h1>
+      <p class="text-lg text-[var(--text-secondary)] max-w-2xl">High-performance production assets curated for professional creators. Completely static, open source, and loaded instantly.</p>
+    </div>
+
+    <!-- Search Controls & Filters Matrix Layout Panel -->
+    <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-4 mb-8 shadow-sm flex flex-col lg:flex-row gap-4 items-center justify-between" data-aos="fade-up">
+      <div class="relative w-full lg:max-w-md">
+        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+        <input type="text" id="global-search" placeholder="Filter by keyword, title, tag, filetype..." class="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[var(--accent-color)] transition-all">
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+        <select id="sort-select" class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)] transition-colors">
+          <option value="newest">Upload Date: Newest</option>
+          <option value="oldest">Upload Date: Oldest</option>
+          <option value="popular">Popularity: Top Downloaded</option>
+          <option value="largest">File Volume: Max Size</option>
+          <option value="smallest">File Volume: Min Size</option>
+          <option value="alpha">Alphabetical Order</option>
+        </select>
+
+        <div class="flex items-center border border-[var(--border-color)] rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 p-0.5">
+          <button id="view-grid-btn" class="px-3 py-1.5 rounded-md text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Grid View Layout">
+            <i class="fas fa-th-large"></i>
+          </button>
+          <button id="view-list-btn" class="px-3 py-1.5 rounded-md text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Structured List Layout">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inline Horizontal Scroller Category Sub-deck Component Block -->
+    <div class="flex gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none border-b border-[var(--border-color)]" data-aos="fade-up">
+      <button class="cat-filter-btn active-accent px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] whitespace-nowrap transition-all hover:border-[var(--accent-color)]" data-category="all">All Items</button>
+      <button class="cat-filter-btn px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] whitespace-nowrap transition-all hover:border-[var(--accent-color)]" data-category="RAW Videos">RAW Videos</button>
+      <button class="cat-filter-btn px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] whitespace-nowrap transition-all hover:border-[var(--accent-color)]" data-category="LUT Packs">LUT Packs</button>
+      <button class="cat-filter-btn px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] whitespace-nowrap transition-all hover:border-[var(--accent-color)]" data-category="Sound Effects">Sound Effects</button>
+      <button class="cat-filter-btn px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] whitespace-nowrap transition-all hover:border-[var(--accent-color)]" data-category="ZIP Files">ZIP Libraries</button>
+    </div>
+
+    <!-- Main Output Context Container Targets Matrix DOM Element -->
+    <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Generated content loads smoothly here instantly during evaluation runtime steps -->
+    </div>
+  </main>
+
+  <!-- Execution Initialization Script Assemblies Engine Hooks -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup dynamic scroll layout animations hooks safely
+      if(document.documentElement.getAttribute('data-animations') !== 'disabled') {
+        AOS.init({ duration: 600, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', once: true });
+      }
+    });
+  </script>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

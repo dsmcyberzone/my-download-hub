@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Customization Framework</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-primary: #f9fafb;
+      --bg-secondary: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border-color: #e5e7eb;
+      --accent-color: #3b82f6;
+    }
+    body { background-color: var(--bg-primary); color: var(--text-primary); }
+  </style>
+  <script src="assets/js/theme.js"></script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- Header Section Bar -->
+  <header class="w-full bg-[var(--bg-secondary)] border-b border-[var(--border-color)] h-16 flex items-center px-8 justify-between">
+    <a href="downloads.html" class="text-sm font-semibold text-[var(--accent-color)] flex items-center gap-2"><i class="fas fa-arrow-left"></i> Back to Asset Deck</a>
+    <span class="text-xs uppercase font-mono tracking-widest text-[var(--text-secondary)] opacity-60">Engine Dashboard</span>
+  </header>
+
+  <!-- Core Module Control Settings Form Shell Container Panel Block -->
+  <main class="flex-grow max-w-2xl w-full mx-auto px-4 py-12">
+    <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl shadow-xl p-6 sm:p-8">
+      <h2 class="text-2xl font-black tracking-tight mb-1 text-[var(--text-primary)]">Preferences</h2>
+      <p class="text-sm text-[var(--text-secondary)] mb-8">Personalize your browsing environment. Changes sync instantly across the active domain node via client caching.</p>
+      
+      <form id="preferences-form" class="space-y-6">
+        <!-- Theme Dropdown Switcher System -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Display Theme Mode</label>
+          <select id="setting-theme" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)]">
+            <option value="system">Follow Operating System Default Configuration</option>
+            <option value="light">Premium High-Contrast Apple Light Interface</option>
+            <option value="dark">Low-Light Obsidian Dark Terminal View</option>
+          </select>
+        </div>
+
+        <!-- Color Accents Palette Controls Grid -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Accent Signature Color</label>
+          <select id="setting-accent" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)]">
+            <option value="blue">Vercel Neon Blue Accent</option>
+            <option value="purple">Linear Dark Amethyst Purple</option>
+            <option value="green">GitHub Developer Emerald Green</option>
+            <option value="orange">Creative Catalyst Signal Orange</option>
+            <option value="red">High-Frequency Crimson Red</option>
+          </select>
+        </div>
+
+        <!-- Animation Layer Engine Option Controls Switch -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Motion and Physics Rendering</label>
+          <select id="setting-animations" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)]">
+            <option value="enabled">Enable Hardware Accelerated Animations (AOS Core)</option>
+            <option value="disabled">Disable Complex Motion Parameters (Reduce Motion)</option>
+          </select>
+        </div>
+
+        <!-- Language Translation Mock Interface Module Block Selector -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">System Localization Engine</label>
+          <select id="setting-language" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-[var(--border-color)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)]">
+            <option value="en">English (Global Default Standard)</option>
+            <option value="si">Sinhala (සිංහල)</option>
+          </select>
+        </div>
+
+        <!-- Bottom Actions Row Panel Elements Container -->
+        <div class="pt-6 border-t border-[var(--border-color)] flex items-center justify-end gap-3">
+          <button type="button" id="save-settings-btn" class="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow transition-colors">Save Configurations</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('preferences-form');
+      const savedSettings = JSON.parse(localStorage.getItem('hub_settings')) || {
+        theme: 'system', accent: 'blue', animations: 'enabled', language: 'en'
+      };
+
+      // Set input states to match stored properties
+      document.getElementById('setting-theme').value = savedSettings.theme;
+      document.getElementById('setting-accent').value = savedSettings.accent;
+      document.getElementById('setting-animations').value = savedSettings.animations;
+      document.getElementById('setting-language').value = savedSettings.language;
+
+      document.getElementById('save-settings-btn').addEventListener('click', () => {
+        const payload = {
+          theme: document.getElementById('setting-theme').value,
+          accent: document.getElementById('setting-accent').value,
+          animations: document.getElementById('setting-animations').value,
+          language: document.getElementById('setting-language').value
+        };
+
+        // Cache parameters into client storage registry
+        localStorage.setItem('hub_settings', JSON.stringify(payload));
+        
+        // Push configuration parameters into execution instances
+        window.HubThemeEngine.applyTheme(payload.theme);
+        window.HubThemeEngine.applyAccent(payload.accent);
+        window.HubThemeEngine.applyAnimations(payload.animations);
+
+        alert('System preferences successfully synchronized across static context modules.');
+      });
+    });
+  </script>
+</body>
+</html>
