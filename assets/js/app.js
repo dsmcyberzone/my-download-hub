@@ -19,6 +19,9 @@ class DownloadHubApp {
     this.sortSelector = document.getElementById('sort-select');
     this.viewToggleGrid = document.getElementById('view-grid-btn');
     this.viewToggleList = document.getElementById('view-list-btn');
+    
+    // Default Active View State
+    if(this.viewToggleGrid) this.viewToggleGrid.classList.add('active-view');
   }
 
   initEventListeners() {
@@ -48,10 +51,14 @@ class DownloadHubApp {
     if (this.viewToggleGrid && this.viewToggleList) {
       this.viewToggleGrid.addEventListener('click', () => {
         this.currentFilters.view = 'grid';
+        this.viewToggleGrid.classList.add('active-view');
+        this.viewToggleList.classList.remove('active-view');
         this.render();
       });
       this.viewToggleList.addEventListener('click', () => {
         this.currentFilters.view = 'list';
+        this.viewToggleList.classList.add('active-view');
+        this.viewToggleGrid.classList.remove('active-view');
         this.render();
       });
     }
@@ -60,7 +67,7 @@ class DownloadHubApp {
       this.cardsContainer.addEventListener('click', (e) => {
         const favoriteBtn = e.target.closest('.fav-toggle-btn');
         if (favoriteBtn) {
-          e.preventDefault(); // පිටුව මාරු වීම වළක්වයි
+          e.preventDefault(); // වෙනත් පිටුවකට යන එක තත්පරයකට නවත්වනවා Fav එක Click කරද්දී
           const id = favoriteBtn.getAttribute('data-id');
           this.toggleFavorite(id, favoriteBtn);
         }
@@ -114,7 +121,7 @@ class DownloadHubApp {
     
     if (targetData.length === 0) {
       this.cardsContainer.innerHTML = `
-        <div class="col-span-full py-16 text-center text-gray-500">
+        <div class="col-span-full py-16 text-center text-[var(--text-secondary)]">
           <i class="fas fa-search-minus text-4xl mb-4 opacity-50"></i>
           <p class="text-lg font-medium">No assets match your parameters.</p>
         </div>`;
@@ -132,7 +139,7 @@ class DownloadHubApp {
 
   generateGridHTML(item, isFav) {
     return `
-      <a href="downloads.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      <a href="asset-details.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
         <div class="relative overflow-hidden aspect-video bg-gray-900">
           <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
           <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold uppercase text-white bg-black/60 backdrop-blur-md rounded-full">${item.category}</span>
@@ -148,12 +155,12 @@ class DownloadHubApp {
           <h3 class="text-lg font-bold text-[var(--text-primary)] mb-2 line-clamp-1">${item.title}</h3>
           <p class="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">${item.description}</p>
           <div class="flex flex-wrap gap-1 mb-4">
-            ${item.tags.map(tag => `<span class="text-xs bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] px-2 py-0.5 rounded-md">#${tag}</span>`).join('')}
+            ${item.tags.map(tag => `<span class="text-xs bg-[var(--bg-primary)] text-[var(--text-secondary)] px-2 py-0.5 rounded-md border border-[var(--border-color)]/40">#${tag}</span>`).join('')}
           </div>
           <div class="flex items-center justify-between pt-3 border-t border-[var(--border-color)]">
-            <span class="text-xs text-[var(--text-secondary)]"><i class="fas fa-download mr-1.5"></i>${item.downloads.toLocaleString()} views</span>
+            <span class="text-xs text-[var(--text-secondary)]"><i class="fas fa-eye mr-1.5"></i>${item.downloads.toLocaleString()} views</span>
             <span class="bg-[var(--accent-color)] group-hover:bg-[var(--accent-hover)] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-              <span>View Details</span><i class="fas fa-arrow-right text-xs"></i>
+              <span>View Asset</span><i class="fas fa-arrow-right text-xs"></i>
             </span>
           </div>
         </div>
@@ -162,11 +169,11 @@ class DownloadHubApp {
 
   generateListHTML(item, isFav) {
     return `
-      <a href="downloads.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+      <a href="asset-details.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300">
         <img src="${item.image}" alt="${item.title}" class="w-full sm:w-28 aspect-video sm:h-20 object-cover rounded-lg bg-gray-900" loading="lazy">
-        <div class="flex-grow min-w-0">
+        <div class="flex-grow min-w-0 w-full">
           <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-semibold px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] rounded">${item.category}</span>
+            <span class="text-xs font-semibold px-2 py-0.5 bg-black/10 text-[var(--text-primary)] rounded">${item.category}</span>
             <h3 class="text-base font-bold text-[var(--text-primary)] truncate">${item.title}</h3>
           </div>
           <p class="text-xs text-[var(--text-secondary)] line-clamp-1 mb-2">${item.description}</p>
@@ -179,7 +186,7 @@ class DownloadHubApp {
           <button class="fav-toggle-btn w-9 h-9 border border-[var(--border-color)] text-[var(--text-secondary)] flex items-center justify-center rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-id="${item.id}">
             <i class="${isFav ? 'fas fa-heart text-red-500' : 'far fa-heart'}"></i>
           </button>
-          <span class="bg-[var(--accent-color)] text-white text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+          <span class="bg-[var(--accent-color)] text-white text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap">
             <span>Open</span><i class="fas fa-arrow-right text-xs"></i>
           </span>
         </div>
