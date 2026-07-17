@@ -20,9 +20,33 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // DOM UI Element Mapping
-  document.getElementById('asset-image').src = item.image;
-  document.getElementById('asset-image').alt = item.title;
+  // --- YOUTUBE EMBED MODULE ---
+  const videoContainer = document.getElementById('video-container');
+  const imageContainer = document.getElementById('image-container');
+  const videoFrame = document.getElementById('asset-video-frame');
+
+  if (item.youtubeUrl) {
+    // YouTube සාමාන්‍ය ලින්ක් එකක් හෝ Share ලින්ක් එකක් Embed ලින්ක් එකකට හරවනවා
+    let videoId = '';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = item.youtubeUrl.match(regExp);
+    
+    if (match && match[2].length === 11) {
+      videoId = match[2];
+      videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+      videoContainer.classList.remove('hidden'); // වීඩියෝව පෙන්වන්න
+      imageContainer.classList.add('hidden');    // ඉමේජ් එක හංගන්න
+    }
+  } else {
+    // වීඩියෝ ලින්ක් එකක් නැත්නම් සාමාන්‍ය ඉමේජ් එක පෙන්වනවා
+    document.getElementById('asset-image').src = item.image;
+    document.getElementById('asset-image').alt = item.title;
+    videoContainer.classList.add('hidden');
+    imageContainer.classList.remove('hidden');
+  }
+  // ----------------------------
+
+  // අනෙකුත් විස්තර පිරවීම
   document.getElementById('asset-category').innerText = item.category;
   document.getElementById('asset-title').innerText = item.title;
   document.getElementById('asset-version').innerText = `v${item.version}`;
@@ -39,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ).join('');
   }
 
-  // Download Trigger Configuration
+  // Download Action
   const dlLink = document.getElementById('asset-download-link');
   if (dlLink) {
     dlLink.href = item.file;
@@ -50,14 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
       dlLink.setAttribute('download', '');
     }
 
-    // Dynamic Download Counter Tracker Simulation
     dlLink.addEventListener('click', () => {
       item.downloads++;
       document.getElementById('asset-downloads').innerText = item.downloads.toLocaleString();
     });
   }
 
-  // Copy Prompt Clipboard Module
+  // Copy Prompt Module
   const copyBtn = document.getElementById('copy-prompt-btn');
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
@@ -72,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Remove skeleton and reveal content gracefully
   if(skeleton) skeleton.classList.add('hidden');
   if(content) content.classList.remove('hidden');
 });
