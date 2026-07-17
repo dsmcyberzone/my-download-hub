@@ -54,7 +54,7 @@ export const downloadsData = [
     "bytes": 2516582,
     "date": "2026-07-17",
     "downloads": 150,
-    "image": "assets/images/tiktok-thumb.jpg", // වෙබ්සයිට් එකේ පේන Before/After image එක
+    "image": "tiktok-prompt-thumb.jpg", // වෙබ්සයිට් එකේ පේන Before/After image එක
     "file": "assets/images/tiktok-download.jpg", // Get File එබුවම download වෙන image එක
     "isExternal": false,
     "version": "1.0",
