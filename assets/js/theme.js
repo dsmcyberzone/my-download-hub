@@ -1,63 +1,44 @@
-// assets/js/theme.js
-(function () {
-  const savedSettings = JSON.parse(localStorage.getItem('hub_settings')) || {
-    theme: 'system',
-    accent: 'blue',
-    animations: 'enabled',
-    language: 'en'
-  };
-
-  // Apply Theme Mode
-  function applyTheme(theme) {
-    const root = document.documentElement;
-    let explicitDark = theme === 'dark';
-    
-    if (theme === 'system') {
-      explicitDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    
-    if (explicitDark) {
-      root.classList.add('dark');
-      root.style.setProperty('--bg-primary', '#0b0f19');
-      root.style.setProperty('--bg-secondary', '#161b26');
-      root.style.setProperty('--text-primary', '#f9fafb');
-      root.style.setProperty('--text-secondary', '#9ca3af');
-      root.style.setProperty('--border-color', '#242b3d');
-    } else {
-      root.classList.remove('dark');
-      root.style.setProperty('--bg-primary', '#f9fafb');
-      root.style.setProperty('--bg-secondary', '#ffffff');
-      root.style.setProperty('--text-primary', '#111827');
-      root.style.setProperty('--text-secondary', '#4b5563');
-      root.style.setProperty('--border-color', '#e5e7eb');
-    }
+// Theme configuration with user defined palettes
+const themes = {
+  light: {
+    'bg-primary': '#F7F8F0',     // Light cream background
+    'bg-secondary': '#9CD5FF',   // Soft blue accent containers
+    'text-primary': '#355872',   // Deep slate blue text
+    'text-secondary': '#7AAACE', // Muted steel blue text
+    'border-color': '#7AAACE',
+    'accent-color': '#355872'
+  },
+  night: {
+    'bg-primary': '#212121',     // Dark charcoal background
+    'bg-secondary': '#323232',   // Lighter gray for cards/containers
+    'text-primary': '#14FFEC',   // Neon cyan text
+    'text-secondary': '#0D7377', // Deep teal text
+    'border-color': '#0D7377',
+    'accent-color': '#14FFEC'
   }
+};
 
-  // Apply Accent Color Hexes
-  function applyAccent(accent) {
-    const root = document.documentElement;
-    const colors = {
-      blue: { primary: '#3b82f6', hover: '#2563eb' },
-      purple: { primary: '#8b5cf6', hover: '#7c3aed' },
-      green: { primary: '#10b981', hover: '#059669' },
-      orange: { primary: '#f97316', hover: '#ea580c' },
-      red: { primary: '#ef4444', hover: '#dc2626' }
-    };
-    const choice = colors[accent] || colors.blue;
-    root.style.setProperty('--accent-color', choice.primary);
-    root.style.setProperty('--accent-hover', choice.hover);
-  }
+// Function to apply colors to the document root
+function applyTheme(themeName) {
+  const root = document.documentElement;
+  const selectedTheme = themes[themeName] || themes.light;
+  
+  Object.keys(selectedTheme).forEach(key => {
+    root.style.setProperty(`--${key}`, selectedTheme[key]);
+  });
+  
+  root.setAttribute('data-theme', themeName);
+  localStorage.setItem('site-theme', themeName);
+}
 
-  // Apply Animations Setup
-  function applyAnimations(status) {
-    document.documentElement.setAttribute('data-animations', status);
-  }
+// Toggle between light and night mode
+function toggleTheme() {
+  const currentTheme = localStorage.getItem('site-theme') === 'night' ? 'light' : 'night';
+  applyTheme(currentTheme);
+}
 
-  // Initialize immediately before body renders
-  applyTheme(savedSettings.theme);
-  applyAccent(savedSettings.accent);
-  applyAnimations(savedSettings.animations);
-
-  // Expose configuration functions globally for settings panels
-  window.HubThemeEngine = { applyTheme, applyAccent, applyAnimations };
+// Initial application on load
+(function() {
+  const savedTheme = localStorage.getItem('site-theme') || 'light';
+  applyTheme(savedTheme);
 })();
