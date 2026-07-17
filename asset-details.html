@@ -50,11 +50,18 @@
 
     <div id="details-content" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 bg-[var(--bg-secondary)] border border-[var(--border-color)] p-6 sm:p-8 rounded-2xl shadow-lg">
       
-      <!-- Left side: Media Preview Layer -->
-      <div class="space-y-4">
-        <div class="relative overflow-hidden aspect-video bg-gray-950 rounded-xl border border-[var(--border-color)]">
+      <!-- Left side: Media Preview & YouTube Video Player Layer -->
+      <div class="space-y-6">
+        <!-- YouTube Dynamic Embed Container -->
+        <div id="video-container" class="hidden relative overflow-hidden aspect-video bg-gray-950 rounded-xl border border-[var(--border-color)] shadow-inner">
+          <iframe id="asset-video-frame" class="absolute top-0 left-0 w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+
+        <!-- Static Image Fallback (If no video link provided) -->
+        <div id="image-container" class="relative overflow-hidden aspect-video bg-gray-950 rounded-xl border border-[var(--border-color)]">
           <img id="asset-image" src="" alt="Preview" class="w-full h-full object-cover">
         </div>
+
         <div class="flex flex-wrap gap-2" id="asset-tags">
           <!-- Tags injected dynamic -->
         </div>
@@ -74,7 +81,7 @@
           </div>
         </div>
 
-        <!-- YouTube Style Deep Interactive Content Box (Prompt / Description Display) -->
+        <!-- YouTube Style Deep Interactive Content Box -->
         <div class="mb-6">
           <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-1.5"><i class="fas fa-terminal"></i> Resource Description / AI Prompt</h3>
           <div class="relative bg-[var(--bg-primary)] border border-[var(--border-color)] p-4 rounded-xl font-mono text-xs leading-relaxed whitespace-pre-wrap select-all group max-h-64 overflow-y-auto">
