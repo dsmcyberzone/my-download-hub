@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asset Details — Creator Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-primary: #F7F8F0;
+      --bg-secondary: #9CD5FF;
+      --text-primary: #355872;
+      --text-secondary: #7AAACE;
+      --border-color: #7AAACE;
+      --accent-color: #355872;
+      --accent-hover: #1e3a52;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+  </style>
+  <script src="assets/js/theme.js"></script>
+</head>
+<body class="antialiased">
+
+  <!-- Navigation Header -->
+  <header class="sticky top-0 z-50 w-full bg-[var(--bg-secondary)]/80 backdrop-blur-md border-b border-[var(--border-color)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2.5 font-bold text-xl tracking-tight text-[var(--text-primary)]">
+        <div class="w-8 h-8 rounded-lg bg-[var(--accent-color)] flex items-center justify-center text-[var(--bg-primary)]">
+          <i class="fas fa-layer-group text-sm"></i>
+        </div>
+        <span>CREATOR<span class="font-light opacity-80">HUB</span></span>
+      </a>
+      <a href="downloads.html" class="px-4 py-2 border border-[var(--border-color)] hover:bg-[var(--accent-color)] hover:text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+        <i class="fas fa-arrow-left text-xs"></i> Back to Library
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <div id="loading-skeleton" class="text-center py-20 text-[var(--text-secondary)]">
+      <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+      <p>Loading asset architectures...</p>
+    </div>
+
+    <div id="details-content" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 bg-[var(--bg-secondary)] border border-[var(--border-color)] p-6 sm:p-8 rounded-2xl shadow-lg">
+      
+      <!-- Left side: Media Preview Layer -->
+      <div class="space-y-4">
+        <div class="relative overflow-hidden aspect-video bg-gray-950 rounded-xl border border-[var(--border-color)]">
+          <img id="asset-image" src="" alt="Preview" class="w-full h-full object-cover">
+        </div>
+        <div class="flex flex-wrap gap-2" id="asset-tags">
+          <!-- Tags injected dynamic -->
+        </div>
+      </div>
+
+      <!-- Right side: Core Info & Action Control Panel -->
+      <div class="flex flex-col justify-between">
+        <div>
+          <span id="asset-category" class="px-2.5 py-1 text-xs font-bold uppercase bg-black/10 text-[var(--text-primary)] rounded-full">Category</span>
+          <h1 id="asset-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-3 mb-4">Asset Title</h1>
+          
+          <div class="grid grid-cols-2 gap-4 text-xs bg-[var(--bg-primary)] border border-[var(--border-color)] p-4 rounded-xl mb-6">
+            <div><span class="opacity-70 block mb-0.5">Version</span><b id="asset-version" class="text-sm">v1.0</b></div>
+            <div><span class="opacity-70 block mb-0.5">File Size</span><b id="asset-size" class="text-sm">0 MB</b></div>
+            <div><span class="opacity-70 block mb-0.5">Release Date</span><b id="asset-date" class="text-sm">2026-00-00</b></div>
+            <div><span class="opacity-70 block mb-0.5">Total Downloads</span><b id="asset-downloads" class="text-sm">0</b></div>
+          </div>
+        </div>
+
+        <!-- YouTube Style Deep Interactive Content Box (Prompt / Description Display) -->
+        <div class="mb-6">
+          <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-1.5"><i class="fas fa-terminal"></i> Resource Description / AI Prompt</h3>
+          <div class="relative bg-[var(--bg-primary)] border border-[var(--border-color)] p-4 rounded-xl font-mono text-xs leading-relaxed whitespace-pre-wrap select-all group max-h-64 overflow-y-auto">
+            <button id="copy-prompt-btn" class="absolute top-2.5 right-2.5 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--accent-color)] hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shadow-sm">
+              <i class="far fa-copy"></i> <span>Copy Prompt</span>
+            </button>
+            <p id="asset-description" class="pr-20">Content description layer.</p>
+          </div>
+        </div>
+
+        <!-- Master Download Action Hook -->
+        <div>
+          <a id="asset-download-link" href="#" class="w-full bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors text-base shadow-md">
+            <span>Download High-Res Resource</span><i class="fas fa-download"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/single-download.js"></script>
+</body>
+</html>
