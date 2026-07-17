@@ -10,7 +10,6 @@ class DownloadHubApp {
     this.initDOM();
     this.initEventListeners();
     this.render();
-    this.initModalHTML(); // Popup එකට අවශ්‍ය HTML එක හදනවා
   }
 
   initDOM() {
@@ -23,7 +22,6 @@ class DownloadHubApp {
   }
 
   initEventListeners() {
-    // Instant real-time typing query lookup
     if (this.searchInput) {
       this.searchInput.addEventListener('input', (e) => {
         this.currentFilters.search = e.target.value.toLowerCase().trim();
@@ -31,7 +29,6 @@ class DownloadHubApp {
       });
     }
 
-    // Dynamic Category Selection
     this.categoryFilters.forEach(btn => {
       btn.addEventListener('click', () => {
         this.categoryFilters.forEach(b => b.classList.remove('active-accent'));
@@ -41,7 +38,6 @@ class DownloadHubApp {
       });
     });
 
-    // Sorting Changes
     if (this.sortSelector) {
       this.sortSelector.addEventListener('change', (e) => {
         this.currentFilters.sort = e.target.value;
@@ -49,7 +45,6 @@ class DownloadHubApp {
       });
     }
 
-    // Layout Switching
     if (this.viewToggleGrid && this.viewToggleList) {
       this.viewToggleGrid.addEventListener('click', () => {
         this.currentFilters.view = 'grid';
@@ -61,96 +56,16 @@ class DownloadHubApp {
       });
     }
 
-    // Event delegation handling inside runtime generated cards
     if (this.cardsContainer) {
       this.cardsContainer.addEventListener('click', (e) => {
         const favoriteBtn = e.target.closest('.fav-toggle-btn');
-        const downloadBtn = e.target.closest('.download-action-btn');
-        const viewPromptBtn = e.target.closest('.view-prompt-btn'); // Prompt එක බලන බටන් එක
-
         if (favoriteBtn) {
+          e.preventDefault(); // පිටුව මාරු වීම වළක්වයි
           const id = favoriteBtn.getAttribute('data-id');
           this.toggleFavorite(id, favoriteBtn);
         }
-        if (downloadBtn) {
-          const id = downloadBtn.getAttribute('data-id');
-          this.trackDownloadCount(id);
-        }
-        if (viewPromptBtn) {
-          const id = viewPromptBtn.getAttribute('data-id');
-          this.openPromptModal(id);
-        }
       });
     }
-  }
-
-  // Popup Modal එක සයිට් එකට dynamic විදිහට ඇතුළත් කරන එක
-  initModalHTML() {
-    const modalDiv = document.createElement('div');
-    modalDiv.id = 'prompt-modal';
-    modalDiv.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300';
-    modalDiv.innerHTML = `
-      <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden mx-4 transform scale-95 transition-transform duration-300">
-        <div class="flex items-center justify-between p-5 border-b border-[var(--border-color)]">
-          <h3 class="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-            <i class="fas fa-terminal text-[var(--accent-color)]"></i> AI Generation Prompt
-          </h3>
-          <button id="close-modal-btn" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xl p-1">&times;</button>
-        </div>
-        <div class="p-6">
-          <div class="relative bg-gray-50 dark:bg-gray-900/50 border border-[var(--border-color)] rounded-xl p-4 mb-4">
-            <p id="modal-prompt-text" class="text-sm text-[var(--text-primary)] leading-relaxed select-all max-h-60 overflow-y-auto font-mono whitespace-pre-wrap"></p>
-            <button id="copy-prompt-btn" class="absolute top-3 right-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] hover:bg-[var(--accent-color)] hover:text-white text-[var(--text-primary)] px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all shadow-sm">
-              <i class="far fa-copy"></i> <span>Copy</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modalDiv);
-
-    // Modal එක වහන Event Listeners
-    modalDiv.addEventListener('click', (e) => {
-      if (e.target === modalDiv || e.target.id === 'close-modal-btn') this.closePromptModal();
-    });
-
-    // Prompt එක Copy කරන Event Listener
-    document.getElementById('copy-prompt-btn').addEventListener('click', () => {
-      const text = document.getElementById('modal-prompt-text').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const copyBtn = document.getElementById('copy-prompt-btn');
-        copyBtn.innerHTML = '<i class="fas fa-check text-green-500"></i> <span>Copied!</span>';
-        setTimeout(() => {
-          copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copy</span>';
-        }, 2000);
-      });
-    });
-  }
-
-  openPromptModal(id) {
-    const item = this.items.find(i => i.id === id);
-    if (!item) return;
-
-    const modal = document.getElementById('prompt-modal');
-    const textContainer = document.getElementById('modal-prompt-text');
-    
-    textContainer.innerText = item.description;
-    
-    // Smooth Animation එකකින් පෙන්වීම
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-      modal.classList.remove('opacity-0');
-      modal.querySelector('div').classList.remove('scale-95');
-    }, 10);
-  }
-
-  closePromptModal() {
-    const modal = document.getElementById('prompt-modal');
-    modal.classList.add('opacity-0');
-    modal.querySelector('div').classList.add('scale-95');
-    setTimeout(() => {
-      modal.classList.add('hidden');
-    }, 3000); // Animation එක ඉවර වුණාම hide කරයි
   }
 
   toggleFavorite(id, element) {
@@ -165,18 +80,8 @@ class DownloadHubApp {
     localStorage.setItem('hub_favorites', JSON.stringify(this.favorites));
   }
 
-  trackDownloadCount(id) {
-    const record = this.items.find(item => item.id === id);
-    if (record) {
-      record.downloads++;
-      this.render(); // Redraw UI counter properties dynamically
-    }
-  }
-
   getFilteredData() {
     let result = [...this.items];
-
-    // Search validation routine
     if (this.currentFilters.search) {
       const q = this.currentFilters.search;
       result = result.filter(item => 
@@ -186,13 +91,9 @@ class DownloadHubApp {
         item.tags.some(t => t.toLowerCase().includes(q))
       );
     }
-
-    // Category processing
     if (this.currentFilters.category !== 'all') {
       result = result.filter(item => item.category === this.currentFilters.category);
     }
-
-    // Multi-criteria Sort Logic
     result.sort((a, b) => {
       switch (this.currentFilters.sort) {
         case 'oldest': return new Date(a.date) - new Date(b.date);
@@ -204,7 +105,6 @@ class DownloadHubApp {
         default: return new Date(b.date) - new Date(a.date);
       }
     });
-
     return result;
   }
 
@@ -214,17 +114,15 @@ class DownloadHubApp {
     
     if (targetData.length === 0) {
       this.cardsContainer.innerHTML = `
-        <div class="col-span-full py-16 text-center text-gray-500 dark:text-gray-400">
+        <div class="col-span-full py-16 text-center text-gray-500">
           <i class="fas fa-search-minus text-4xl mb-4 opacity-50"></i>
-          <p class="text-lg font-medium">No assets match your current parameters.</p>
+          <p class="text-lg font-medium">No assets match your parameters.</p>
         </div>`;
       return;
     }
 
     const isGrid = this.currentFilters.view === 'grid';
-    this.cardsContainer.className = isGrid 
-      ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
-      : "flex flex-col gap-4";
+    this.cardsContainer.className = isGrid ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4";
 
     this.cardsContainer.innerHTML = targetData.map(item => {
       const isFav = this.favorites.includes(item.id);
@@ -234,10 +132,10 @@ class DownloadHubApp {
 
   generateGridHTML(item, isFav) {
     return `
-      <div class="group bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-aos="fade-up">
+      <a href="downloads.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
         <div class="relative overflow-hidden aspect-video bg-gray-900">
           <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-          <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-white bg-black/60 backdrop-blur-md rounded-full">${item.category}</span>
+          <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold uppercase text-white bg-black/60 backdrop-blur-md rounded-full">${item.category}</span>
           <button class="fav-toggle-btn absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-white bg-black/40 backdrop-blur-md rounded-full hover:bg-black/70 transition-colors" data-id="${item.id}">
             <i class="${isFav ? 'fas fa-heart text-red-500' : 'far fa-heart'}"></i>
           </button>
@@ -248,43 +146,32 @@ class DownloadHubApp {
             <span><i class="far fa-calendar-alt mr-1"></i>${item.date}</span>
           </div>
           <h3 class="text-lg font-bold text-[var(--text-primary)] mb-2 line-clamp-1">${item.title}</h3>
-          
-          <!-- මෙතන Description එක උඩ ක්ලික් කරලා මුළු prompt එකම බලන්න පුළුවන් -->
-          <p class="view-prompt-btn text-sm text-[var(--text-secondary)] mb-4 line-clamp-2 cursor-pointer hover:text-[var(--accent-color)] transition-colors" data-id="${item.id}" title="Click to view full prompt">
-            ${item.description} <span class="text-xs text-[var(--accent-color)] font-medium block mt-1">Read Full Prompt...</span>
-          </p>
-
+          <p class="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">${item.description}</p>
           <div class="flex flex-wrap gap-1 mb-4">
             ${item.tags.map(tag => `<span class="text-xs bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] px-2 py-0.5 rounded-md">#${tag}</span>`).join('')}
           </div>
           <div class="flex items-center justify-between pt-3 border-t border-[var(--border-color)]">
-            <span class="text-xs text-[var(--text-secondary)]"><i class="fas fa-download mr-1.5"></i>${item.downloads.toLocaleString()} downloads</span>
-            <a href="${item.file}" ${item.isExternal ? 'target="_blank" rel="noopener noreferrer"' : 'download'} class="download-action-btn bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors" data-id="${item.id}">
-              <span>Get File</span><i class="fas ${item.isExternal ? 'fa-external-link-alt' : 'fa-arrow-down'} text-xs"></i>
-            </a>
+            <span class="text-xs text-[var(--text-secondary)]"><i class="fas fa-download mr-1.5"></i>${item.downloads.toLocaleString()} views</span>
+            <span class="bg-[var(--accent-color)] group-hover:bg-[var(--accent-hover)] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+              <span>View Details</span><i class="fas fa-arrow-right text-xs"></i>
+            </span>
           </div>
         </div>
-      </div>`;
+      </a>`;
   }
 
   generateListHTML(item, isFav) {
     return `
-      <div class="group bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300" data-aos="fade-up">
+      <a href="downloads.html?id=${item.id}" class="group block bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300">
         <img src="${item.image}" alt="${item.title}" class="w-full sm:w-28 aspect-video sm:h-20 object-cover rounded-lg bg-gray-900" loading="lazy">
         <div class="flex-grow min-w-0">
           <div class="flex items-center gap-2 mb-1">
             <span class="text-xs font-semibold px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-[var(--text-secondary)] rounded">${item.category}</span>
             <h3 class="text-base font-bold text-[var(--text-primary)] truncate">${item.title}</h3>
           </div>
-          
-          <!-- List view එකටත් prompt බටන් එක එකතු කළා -->
-          <p class="view-prompt-btn text-xs text-[var(--text-secondary)] line-clamp-1 mb-2 cursor-pointer hover:text-[var(--accent-color)] transition-colors" data-id="${item.id}" title="Click to view full prompt">
-            ${item.description}
-          </p>
-
+          <p class="text-xs text-[var(--text-secondary)] line-clamp-1 mb-2">${item.description}</p>
           <div class="flex gap-4 text-xs text-[var(--text-secondary)]">
             <span>Size: <b>${item.size}</b></span>
-            <span>Downloads: <b>${item.downloads.toLocaleString()}</b></span>
             <span>Date: <b>${item.date}</b></span>
           </div>
         </div>
@@ -292,11 +179,11 @@ class DownloadHubApp {
           <button class="fav-toggle-btn w-9 h-9 border border-[var(--border-color)] text-[var(--text-secondary)] flex items-center justify-center rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-id="${item.id}">
             <i class="${isFav ? 'fas fa-heart text-red-500' : 'far fa-heart'}"></i>
           </button>
-          <a href="${item.file}" ${item.isExternal ? 'target="_blank" rel="noopener noreferrer"' : 'download'} class="download-action-btn bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap" data-id="${item.id}">
-            <span>Download</span><i class="fas ${item.isExternal ? 'fa-external-link-alt' : 'fa-arrow-down'} text-xs"></i>
-          </a>
+          <span class="bg-[var(--accent-color)] text-white text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+            <span>Open</span><i class="fas fa-arrow-right text-xs"></i>
+          </span>
         </div>
-      </div>`;
+      </a>`;
   }
 }
 
